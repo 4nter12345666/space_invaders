@@ -5,6 +5,8 @@ e=720
 y=680
 x=640
 n=11
+m=5
+qq=n*m
 r=130   #x
 t=40    #y
 FPS=60
@@ -14,18 +16,20 @@ sc=pygame.display.set_mode((w, e))
 pygame.display.set_caption(" ")
 q=True
 clock=pygame.time.Clock()
-ship=pygame.image.load("images/ship1.png")
+ship=pygame.image.load("images/ship1.png").convert_alpha()
 ship=pygame.transform.scale(ship, (ship.get_width()//10, ship.get_height()//10))
 
-paz=pygame.image.load("images/parazit_1.png")
+paz=pygame.image.load("images/parazit_1.png").convert()
 paz=pygame.transform.scale(paz, (paz.get_width()*0.7, paz.get_height()*0.7))
 
+paz2=pygame.image.load("images/par2.png").convert_alpha()
+paz2=pygame.transform.scale(paz2, (paz2.get_width()*0.7, paz2.get_height()*0.7))
 right=left=False
-pazr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-for i in range(n):
-    pazr[i] = paz.get_rect(center=(r+i*100, t))
+pazr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+for i in range(qq):
+    pazr[i] = paz.get_rect()
 shipr = ship.get_rect(center=(x, y))
-
+#paz2r=paz2.get_qwerty
 while q:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -57,10 +61,19 @@ while q:
     shipr = ship.get_rect(center=(x, y))
     sc.blit(ship, shipr)
 
-    for i in range(n):
-        pygame.draw.rect(sc, (0, 0, 0), pazr[i])
-        pazr[i] = paz.get_rect(center=(r + i * 100, t))
-        sc.blit(paz, pazr[i])
+    for i in range(qq):
+        str = i // 11
+        stl = i % 11
+        pygame.draw.rect(sc, (0, 0, 0), pazr[i])   #черный квадрат
+        pazr[i] = paz.get_rect(center=(r + stl * 100, t+str*80)) #
+
+        if stl%2==0:
+            sc.blit(paz2, pazr[i])
+        else:
+            sc.blit(paz, pazr[i])
+
+
+
     pygame.display.update()
     clock.tick(FPS)
 
