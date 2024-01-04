@@ -1,5 +1,6 @@
 import pygame
 pygame.init()
+v=False
 w=1280
 e=720
 y=680
@@ -10,8 +11,12 @@ qq=n*m
 r=130   #x
 t=40    #y
 FPS=60
-speed=5
-speed_2=5
+speed=5   #speed of the ship
+speed_2=1.9   #speed of the paz
+speed_3=2.3   #speed of the buller
+a=x
+s=y
+buller=pygame.rect.Rect(a, s, 5, 10)
 sc=pygame.display.set_mode((w, e))
 pygame.display.set_caption(" ")
 q=True
@@ -36,6 +41,8 @@ while q:
             pygame.quit()
             q=False
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                v=True
             if event.key == pygame.K_LEFT:
                 left=True
                 print(f"lkjgf{x} ")
@@ -49,15 +56,35 @@ while q:
                 left = False
             elif event.key == pygame.K_RIGHT:
                 right = False
+
+    #dvizhenie korablya
     if left:
         x -= speed
     if right:
         x += speed
-    r=r+speed_2
+
+    #dvizhenie buller po garizontali if ne vistrel
+    if not v:
+        if left:
+            a = x
+            #s = y
+        if right:
+            a = x
+            #s = y
+
+    #dvizhenie buller po vertikali
+    if v:
+        s=s-speed_3
+
+
+    r=r+speed_2 #dvizhenie parazitov
+
+    pygame.draw.rect(sc, (0, 0, 0), buller)  # zakrashibaem ctaruyu poziciyu of buller
+    buller.center = (a, s) #zadaem new koordinati bulleru
+    pygame.draw.rect(sc, (255, 255, 255), buller) #ricuem buller v novom mecte
 
     #pygame.draw.rect(sc, (0, 0, 0), (x-50, y-50, 500, 500) )
     pygame.draw.rect(sc, (0, 0, 0), shipr)
-
     shipr = ship.get_rect(center=(x, y))
     sc.blit(ship, shipr)
 
@@ -65,12 +92,14 @@ while q:
         str = i // 11
         stl = i % 11
         pygame.draw.rect(sc, (0, 0, 0), pazr[i])   #черный квадрат
-        pazr[i] = paz.get_rect(center=(r + stl * 100, t+str*80)) #
+        pazr[i] = paz.get_rect(center=(r + stl * 100, t+str*80))
 
         if stl%2==0:
             sc.blit(paz2, pazr[i])
         else:
             sc.blit(paz, pazr[i])
+
+
 
 
 
@@ -86,4 +115,8 @@ while q:
 
     #if pazr[0].colliderect(buller):
 
-        #
+        #vozvrat bullera ecli kocnulca kraya
+    if s<=10:
+        v=False
+        a=x
+        s=y
