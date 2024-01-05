@@ -1,9 +1,15 @@
 import pygame
+import time
+import random
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
 
 b=pygame.mixer.Sound("sounds/sh.wav")
 u=pygame.mixer.Sound("sounds/death.wav")
+bg=pygame.mixer.Sound("sounds/bomb.wav")
+go=pygame.mixer.Sound("sounds/go.wav")
+w_m=pygame.mixer.Sound("sounds/win.wav")
+
 v=False
 w=1280
 e=720
@@ -18,13 +24,22 @@ FPS=60
 speed=5   #speed of the ship
 speed_2=1.9   #speed of the paz
 speed_3=9.8888888888888888888888812  #speed of the buller
+speed_4=4.87545646574547537445435763455364475  #speed of the bomb
 a=x
 s=y
 buller=pygame.rect.Rect(a, s, 5, 10)
+
+#координаты бомб
+bombr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+f=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+j=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+p=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 sc=pygame.display.set_mode((w, e))
 pygame.display.set_caption(" ")
 q=True
 clock=pygame.time.Clock()
+pygame.time.set_timer(pygame.USEREVENT, 2000)
 ship=pygame.image.load("images/ship1.png").convert_alpha()
 ship=pygame.transform.scale(ship, (ship.get_width()//10, ship.get_height()//10))
 
@@ -38,6 +53,7 @@ pazr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 pazrdead=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 for i in range(qq):
     pazr[i] = paz.get_rect()
+    bombr[i] =pygame.rect.Rect(0, 0, 10, 10)
 shipr = ship.get_rect(center=(x, y))
 #paz2r=paz2.get_qwerty
 while q:
@@ -51,7 +67,6 @@ while q:
                 b.play()
             if event.key == pygame.K_LEFT:
                 left=True
-                print(f"lkjgf{x} ")
             elif event.key == pygame.K_RIGHT:
                 right=True
             elif event.key == pygame.K_ESCAPE:
@@ -62,6 +77,13 @@ while q:
                 left = False
             elif event.key == pygame.K_RIGHT:
                 right = False
+        elif event.type == pygame.USEREVENT:
+            # cluchayniy parazit brosaet bombu
+            for i in range(5):
+                plyf = random.randint(0, qq-1)
+                if not p[plyf] and not pazrdead[plyf]:
+                    p[plyf]=True
+                    bg.play()
 
     #dvizhenie korablya
     if left:
@@ -82,7 +104,15 @@ while q:
     if v:
         s=s-speed_3
 
-
+    #dvizhenie bomby
+    for i in range(qq):
+        if p[i]:
+            j[i] = j[i] + speed_4
+        #ecli bomb upala na zemlyu
+        if j[i]>=e:
+            p[i]=False
+            f[i]=0
+            j[i]=0
 
     r=r+speed_2 #dvizhenie parazitov
 
@@ -90,19 +120,36 @@ while q:
     buller.center = (a, s) #zadaem new koordinati bulleru
     pygame.draw.rect(sc, (255, 255, 255), buller) #ricuem buller v novom mecte
 
+    for i in range(qq):
+        pygame.draw.rect(sc, (0, 0, 0), bombr[i])  # zakrashibaem ctaruyu poziciyu of bomb
+        bombr[i].center = (f[i], j[i]) # zadaem new koordinati bomb
+        pygame.draw.rect(sc, (255, 255, 255), bombr[i])  # ricuem bomb v novom mecte
+
     #pygame.draw.rect(sc, (0, 0, 0), (x-50, y-50, 500, 500) )
     pygame.draw.rect(sc, (0, 0, 0), shipr)
     shipr = ship.get_rect(center=(x, y))
     sc.blit(ship, shipr)
 
     plyf = buller.collidelist(pazr)
-    print(plyf)
     if plyf!=-1 and not pazrdead[plyf]:
         v=False
         s=y
         a=x
         pazrdead[plyf]=True
         u.play()
+        if all(pazrdead):
+            w_m.play()
+            time.sleep(5)
+            exit()
+
+
+
+    blyf = shipr.collidelist(bombr)
+    if blyf!=-1:
+        go.play()
+        time.sleep(5)
+        exit()
+
 
 
     for i in range(qq):
@@ -110,6 +157,9 @@ while q:
         stl = i % 11
         pygame.draw.rect(sc, (0, 0, 0), pazr[i])   #черный квадрат
         pazr[i] = paz.get_rect(center=(r + stl * 100, t+str*80))
+        if not p[i]:
+            f[i]=r + stl * 100
+            j[i]=t + str * 80
 
         if pazrdead[i]:
             pass
@@ -127,11 +177,9 @@ while q:
 #        speed_2=5
     if pazr[n-1].right>=w or pazr[0].left<=0:
         speed_2 = -speed_2
-
-
     #if pazr[0].colliderect(buller):
 
-        #vozvrat bullera ecli kocnulca kraya
+    #vozvrat bullera ecli kocnulca kraya
     if s<=10:
         v=False
         a=x
