@@ -13,7 +13,7 @@ t=40    #y
 FPS=60
 speed=5   #speed of the ship
 speed_2=1.9   #speed of the paz
-speed_3=2.3   #speed of the buller
+speed_3=9.8888888888888888888888812  #speed of the buller
 a=x
 s=y
 buller=pygame.rect.Rect(a, s, 5, 10)
@@ -31,6 +31,7 @@ paz2=pygame.image.load("images/par2.png").convert_alpha()
 paz2=pygame.transform.scale(paz2, (paz2.get_width()*0.7, paz2.get_height()*0.7))
 right=left=False
 pazr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+pazrdead=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 for i in range(qq):
     pazr[i] = paz.get_rect()
 shipr = ship.get_rect(center=(x, y))
@@ -77,6 +78,7 @@ while q:
         s=s-speed_3
 
 
+
     r=r+speed_2 #dvizhenie parazitov
 
     pygame.draw.rect(sc, (0, 0, 0), buller)  # zakrashibaem ctaruyu poziciyu of buller
@@ -88,19 +90,27 @@ while q:
     shipr = ship.get_rect(center=(x, y))
     sc.blit(ship, shipr)
 
+    plyf = buller.collidelist(pazr)
+    print(plyf)
+    if plyf!=-1 and not pazrdead[plyf]:
+        v=False
+        s=y
+        a=x
+        pazrdead[plyf]=True
+
+
     for i in range(qq):
         str = i // 11
         stl = i % 11
         pygame.draw.rect(sc, (0, 0, 0), pazr[i])   #черный квадрат
         pazr[i] = paz.get_rect(center=(r + stl * 100, t+str*80))
 
-        if stl%2==0:
+        if pazrdead[i]:
+            pass
+        elif str<1:
             sc.blit(paz2, pazr[i])
-        else:
+        elif str>=1:
             sc.blit(paz, pazr[i])
-
-
-
 
 
     pygame.display.update()
@@ -112,6 +122,7 @@ while q:
 #        speed_2=5
     if pazr[n-1].right>=w or pazr[0].left<=0:
         speed_2 = -speed_2
+
 
     #if pazr[0].colliderect(buller):
 
