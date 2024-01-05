@@ -1,5 +1,9 @@
 import pygame
+pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
+
+b=pygame.mixer.Sound("sounds/sh.wav")
+u=pygame.mixer.Sound("sounds/death.wav")
 v=False
 w=1280
 e=720
@@ -44,6 +48,7 @@ while q:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 v=True
+                b.play()
             if event.key == pygame.K_LEFT:
                 left=True
                 print(f"lkjgf{x} ")
@@ -97,6 +102,7 @@ while q:
         s=y
         a=x
         pazrdead[plyf]=True
+        u.play()
 
 
     for i in range(qq):
@@ -111,7 +117,6 @@ while q:
             sc.blit(paz2, pazr[i])
         elif str>=1:
             sc.blit(paz, pazr[i])
-
 
     pygame.display.update()
     clock.tick(FPS)
