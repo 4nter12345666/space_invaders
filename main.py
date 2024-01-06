@@ -79,7 +79,7 @@ while q:
                 right = False
         elif event.type == pygame.USEREVENT:
             # cluchayniy parazit brosaet bombu
-            for i in range(5):
+            for i in range(7):
                 plyf = random.randint(0, qq-1)
                 if not p[plyf] and not pazrdead[plyf]:
                     p[plyf]=True
