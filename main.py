@@ -81,8 +81,11 @@ while q:
             # cluchayniy parazit brosaet bombu
             for i in range(7):
                 plyf = random.randint(0, qq-1)
+                bomb=False
                 if not p[plyf] and not pazrdead[plyf]:
                     p[plyf]=True
+                    bomb=True
+                if bomb:
                     bg.play()
 
     #dvizhenie korablya
